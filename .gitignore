@@ -1,0 +1,30 @@
+# Rust
+**/target/
+**/*.rs.bk
+
+# Exclure les artefacts de compilation Linux
+*.o
+*.cmd
+*.ko
+*.mod
+*.mod.c
+*.symvers
+*.order
+.tmp_versions/
+vmlinux
+
+# Si vous voulez exclure TOUT le dossier des sources Linux (recommandé si très lourd)
+# et ne garder que vos scripts de build / module Rust :
+# linux-6.18/
+
+# Fichiers temporaires et images d'exécution QEMU
+*.iso
+*.img
+*.log
+
+# Autres
+*.tar.xz
+*.tar.gz
+*.zip
+*.tar
+*.tar.xz
