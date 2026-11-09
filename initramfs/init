@@ -1,4 +1,16 @@
-#!/bin/bash
-mount -t proc none /proc
-mount -t sysfs none /sys
-exec /bin/bash
+#!/bin/busybox sh
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+# Monter les systèmes de fichiers virtuels
+/bin/busybox mount -t proc none /proc
+/bin/busybox mount -t sysfs none /sys
+/bin/busybox mount -t devtmpfs none /dev
+
+# Générer les liens symboliques pour toutes les commandes (ip, insmod, etc.)
+/bin/busybox --install -s /bin
+
+# Activer l'interface loopback
+ip link set lo up
+
+echo "--- Shell QEMU Prêt ---"
+exec /bin/sh

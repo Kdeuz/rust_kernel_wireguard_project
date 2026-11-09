@@ -28,3 +28,5 @@ vmlinux
 *.zip
 *.tar
 *.tar.xz
+notes.md
+notes/

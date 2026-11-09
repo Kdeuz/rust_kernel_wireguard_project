@@ -1,0 +1,5 @@
+config WIREGUARD_RS
+	tristate "Wireguard Rust experimental module"
+	depends on RUST
+	help
+	  Experimental Rust implementation of the Wireguard protocol

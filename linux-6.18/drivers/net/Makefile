@@ -90,3 +90,9 @@ obj-$(CONFIG_FUJITSU_ES) += fjes/
 obj-$(CONFIG_USB4_NET) += thunderbolt/
 obj-$(CONFIG_NETDEVSIM) += netdevsim/
 obj-$(CONFIG_NET_FAILOVER) += net_failover.o
+
+#
+# Tests module
+#
+obj-$(CONFIG_TEST_RS) += test_rs/
+obj-$(CONFIG_WIREGUARD_RS) += wireguard_rs/

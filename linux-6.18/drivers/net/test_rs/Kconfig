@@ -1,0 +1,7 @@
+config TEST_RS
+	tristate "Test Rust module"
+	depends on RUST
+	help
+	  This enables a dummy Rust kernel module for testing.
+
+	  If unsure, say N.
