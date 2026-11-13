@@ -22,7 +22,10 @@ impl kernel::Module for Test {
 
         pr_info!("{}\n", messageins);
 
-        Ok(Test { messageins, messagerm })
+        Ok(Test {
+            messageins,
+            messagerm,
+        })
     }
 }
 
@@ -31,4 +34,3 @@ impl Drop for Test {
         pr_info!("{}\n", self.messagerm);
     }
 }
-
