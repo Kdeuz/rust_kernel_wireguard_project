@@ -44,9 +44,13 @@ impl Drop for WireguardRs {
     }
 }
 
-// SAFETY: We initialize a net_device_ops zeroed out,
-// All the fields are Options of function pointers that will be None (NULL for C)
-static WG_NETDEV_OPS: bindings::net_device_ops = unsafe { core::mem::zeroed() };
+static WG_NETDEV_OPS: bindings::net_device_ops = bindings::net_device_ops {
+    ndo_start_xmit: Some(wg_xmit),
+
+    // SAFETY: We initialize a net_device_ops zeroed out,
+    // Every remaining field is an Option of function pointers that will be None (NULL for C)
+    ..unsafe { core::mem::zeroed() }
+};
 
 /// # Safety
 ///
@@ -56,10 +60,33 @@ unsafe extern "C" fn wg_setup(dev: *mut bindings::net_device) {
     // SAFETY: It is OK to write through dev because it points to a valid freshly allocated net_device
     // WG_NETDEV_OPS is a static, so it lives as long as the module is loaded
     // and the device holding the pointer can't outlive the module because of rtnl_link_unregister
-    // in Drop that destroysbevery remaining link of this kind before it returns
+    // in Drop that destroys every remaining link of this kind before it returns
     unsafe {
         (*dev).netdev_ops = core::ptr::addr_of!(WG_NETDEV_OPS);
+        (*dev).needs_free_netdev = true;
     }
+}
+
+/// # Safety
+///
+/// dev points to a valid allocated net_device
+/// skb points to a validly allocated sk_buff and it is owned by this function
+unsafe extern "C" fn wg_xmit(
+    skb: *mut bindings::sk_buff,
+    _dev: *mut bindings::net_device,
+) -> bindings::netdev_tx_t {
+    pr_info!("wg_xmit called\n");
+
+    // SAFETY: "skb" is valid and owned by this function per the "# Safety" contract,
+    // and "dev_kfree_skb_any_reason" is safe to call from any execution context.
+    unsafe {
+        bindings::dev_kfree_skb_any_reason(
+            skb,
+            bindings::skb_drop_reason_SKB_DROP_REASON_NOT_SPECIFIED,
+        );
+    }
+
+    bindings::netdev_tx_NETDEV_TX_OK
 }
 
 struct LinkOps(Opaque<bindings::rtnl_link_ops>);

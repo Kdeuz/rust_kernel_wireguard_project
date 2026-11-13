@@ -21,6 +21,7 @@ vmlinux
 *.iso
 *.img
 *.log
+initramfs.cpio.gz
 
 # Autres
 *.tar.xz
